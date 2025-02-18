@@ -14,3 +14,4 @@ class runEvent(IEvent):
             pixmap = QPixmap(result_path)
             ui_instance.upload_icon.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
             ui_instance.download_button.setVisible(True)
+            ui_instance.image_path = None

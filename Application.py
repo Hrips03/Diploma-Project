@@ -2,7 +2,6 @@ from Controller import controller
 from UI import ui
 from GAN import gan
 
-
 class Application:
     _instance = None
     m_controller = None

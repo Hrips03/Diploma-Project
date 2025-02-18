@@ -6,13 +6,10 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt
-# from Controller import IEvent, runEvent, uploadEvent, downloadEvent
-
-# event_map = {
-#             "upload": uploadEvent(),
-#             "run": runEvent(),
-#             "download": downloadEvent(),
-#         }
+from Controller.IEvent import IEvent
+from Controller.runEvent import runEvent
+from Controller.uploadEvent import uploadEvent
+from Controller.downloadEvent import downloadEvent
 
 class UI(QWidget):
     def __init__(self):
@@ -20,6 +17,13 @@ class UI(QWidget):
         self.image_path = None
         self.result_image_path = None
         self.init_ui()
+
+        self.event_map = {
+            "upload": uploadEvent(),
+            "run": runEvent(),
+            "download": downloadEvent(),
+        }
+
 
     def init_ui(self):
         self.setWindowTitle("Mask Optimization Algorithm")
@@ -53,13 +57,13 @@ class UI(QWidget):
         self.drop_label.setAlignment(Qt.AlignCenter)
         drop_layout.addWidget(self.drop_label)
 
-        self.attach_button = self.create_button("Choose Image", "#003399", self.attach_file)
+        self.attach_button = self.create_button("Choose Image", "#003399", lambda: self.sendEvent("upload"))
         layout.addWidget(self.attach_button)
 
-        self.run_button = self.create_button("Run", "#003399", self.run_logic, visible=False)
+        self.run_button = self.create_button("Run", "#003399", lambda: self.sendEvent("run"), visible=False)
         layout.addWidget(self.run_button)
 
-        self.download_button = self.create_button("Download Result", "#28a745", self.download_result, visible=False)
+        self.download_button = self.create_button("Download Result", "#28a745", lambda: self.sendEvent("download"), visible=False)
         layout.addWidget(self.download_button)
 
         self.setAcceptDrops(True)
@@ -74,44 +78,50 @@ class UI(QWidget):
         return button
 
 
-    def sendEvent(self):
-        pass
+    def sendEvent(self, event_type):
+        print(f"sendEvent called with event_type: {event_type}")  # Debugging
+        event = self.event_map.get(event_type)
+        if event:
+            print(f"Calling handle method for {event_type}")  # Debugging
+            event.handle(self)
+        else:
+            print(f"Unknown event type: {event_type}")
 
 
 
-    def attach_file(self):
-        """Opens file dialog to select an image."""
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg *.bmp)")
-        if file_path:
-            self.load_file(file_path)
+    # def attach_file(self):
+    #     """Opens file dialog to select an image."""
+    #     file_path, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg *.bmp)")
+    #     if file_path:
+    #         self.load_file(file_path)
 
-    def load_file(self, file_path):
-        """Loads and displays the selected image."""
-        self.image_path = file_path
-        self.drop_label.setText(f"Selected: {os.path.basename(file_path)}")
-        pixmap = QPixmap(file_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.upload_icon.setPixmap(pixmap)
-        self.run_button.setVisible(True)
+    # def load_file(self, file_path):
+    #     """Loads and displays the selected image."""
+    #     self.image_path = file_path
+    #     self.drop_label.setText(f"Selected: {os.path.basename(file_path)}")
+    #     pixmap = QPixmap(file_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    #     self.upload_icon.setPixmap(pixmap)
+    #     self.run_button.setVisible(True)
 
-    def run_logic(self):
-        """Placeholder for the processing function."""
-        if self.image_path:
-            self.drop_label.setText("Processing Image... (Logic not included)")
-            self.result_image_path = "result.png"  # Dummy placeholder for processed image
-            self.display_result_image(self.result_image_path)
-            self.download_button.setVisible(True)
+    # def run_logic(self):
+    #     """Placeholder for the processing function."""
+    #     if self.image_path:
+    #         self.drop_label.setText("Processing Image... (Logic not included)")
+    #         self.result_image_path = "result.png"  # Dummy placeholder for processed image
+    #         self.display_result_image(self.result_image_path)
+    #         self.download_button.setVisible(True)
 
-    def display_result_image(self, result_path):
-        """Displays the result image after processing."""
-        pixmap = QPixmap(result_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.upload_icon.setPixmap(pixmap)
+    # def display_result_image(self, result_path):
+    #     """Displays the result image after processing."""
+    #     pixmap = QPixmap(result_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    #     self.upload_icon.setPixmap(pixmap)
 
-    def download_result(self):
-        """Allows the user to save the processed image."""
-        save_path, _ = QFileDialog.getSaveFileName(self, "Save Result", "", "Images (*.png *.jpg *.bmp)")
-        if save_path and self.result_image_path:
-            shutil.copy(self.result_image_path, save_path)
-            self.drop_label.setText(f"Saved at: {save_path}")
+    # def download_result(self):
+    #     """Allows the user to save the processed image."""
+    #     save_path, _ = QFileDialog.getSaveFileName(self, "Save Result", "", "Images (*.png *.jpg *.bmp)")
+    #     if save_path and self.result_image_path:
+    #         shutil.copy(self.result_image_path, save_path)
+    #         self.drop_label.setText(f"Saved at: {save_path}")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -124,7 +134,9 @@ class UI(QWidget):
         if urls:
             file_path = urls[0].toLocalFile()
             if file_path.lower().endswith((".png", ".jpg", ".jpeg", ".bmp")):
-                self.load_file(file_path)
+                # self.load_file(file_path)
+                self.image_path = file_path
+                self.sendEvent("upload")
             else:
                 self.drop_label.setText("Invalid file type! Please drop an image.")
 

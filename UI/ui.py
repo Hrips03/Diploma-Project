@@ -1,12 +1,8 @@
-import os
-import shutil
-import sys
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QFrame
+    QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QFrame
 )
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtCore import Qt
-from Controller.IEvent import IEvent
 from Controller.runEvent import runEvent
 from Controller.uploadEvent import uploadEvent
 from Controller.downloadEvent import downloadEvent
@@ -101,4 +97,3 @@ class UI(QWidget):
                 self.sendEvent("upload")
             else:
                 self.drop_label.setText("Invalid file type! Please drop an image.")
-

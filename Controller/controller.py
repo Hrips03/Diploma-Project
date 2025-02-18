@@ -8,9 +8,3 @@ class Controller:
         window = Application.Application.getInstance().getUI()
         window.show()
         sys.exit(app.exec_())
-        #IEvent pointer = application::getInstance().getUI().event()
-        #pointer->handle();
-        pass
-    
-    def exit(self):
-        pass

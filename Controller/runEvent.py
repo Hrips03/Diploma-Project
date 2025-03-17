@@ -1,7 +1,7 @@
 from Controller.IEvent import IEvent  
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-# from GAN import gan
+from GAN.train import train
 
 class runEvent(IEvent):
     def handle(self, ui_instance):

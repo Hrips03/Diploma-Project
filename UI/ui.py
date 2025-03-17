@@ -43,7 +43,7 @@ class UI(QWidget):
         drop_layout = QVBoxLayout(self.drop_area)
 
         self.upload_icon = QLabel(self.drop_area)
-        self.upload_icon.setPixmap(QPixmap("upload_icon_new.png").scaled(
+        self.upload_icon.setPixmap(QPixmap("G:/Hripsime/Education/UNI/4rd_kurs/Diploma project/Code/Diploma-Project/UI/upload_icon.png").scaled(
             100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.upload_icon.setAlignment(Qt.AlignCenter)
         drop_layout.addWidget(self.upload_icon)

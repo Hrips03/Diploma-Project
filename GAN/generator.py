@@ -2,9 +2,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+
 class Generator(keras.Model):
-    def __init__(self):
-        super(Generator, self).__init__()
+    def __init__(self, **kwargs):  # Accept extra arguments like 'trainable'
+        super(Generator, self).__init__(**kwargs)
         self.encoder = self.build_encoder()
         self.decoder = self.build_decoder()
 

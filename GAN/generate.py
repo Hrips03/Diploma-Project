@@ -26,7 +26,7 @@ class MaskGenerator:
             
             # If the model output needs reshaping, adjust accordingly
             predicted_mask = np.squeeze(predicted_mask, axis=0)  # Remove batch dimension
-            
+            predicted_mask = np.squeeze(predicted_mask)
             return predicted_mask
         except Exception as e:
             print(f"Error generating mask: {e}")
